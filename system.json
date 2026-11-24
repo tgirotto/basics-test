@@ -17,7 +17,7 @@
       "name": "coldroom",
       "kind": "modelica",
       "path": "coldroom.mo",
-      "role": "Insulated cold room thermal plant (UA = 20 W/K) with refrigeration",
+      "role": "Insulated cold room thermal plant (UA = 20 W/K) with refrigeration; EER 4.5 at 25 C ambient, 3.5 at 35 C ambient",
       "ports": [
         {
           "name": "T_amb",
@@ -48,6 +48,16 @@
           "name": "Q_cool",
           "causality": "output",
           "description": "Refrigeration power removed [W]"
+        },
+        {
+          "name": "EER",
+          "causality": "output",
+          "description": "Energy efficiency ratio [-]"
+        },
+        {
+          "name": "P_el",
+          "causality": "output",
+          "description": "Compressor electrical power [W]"
         }
       ]
     },
@@ -66,6 +76,39 @@
           "name": "cooling_cmd",
           "causality": "output",
           "description": "Compressor command 0..1"
+        }
+      ]
+    },
+    {
+      "name": "energy_meter",
+      "kind": "structured_text",
+      "path": "energy_meter.st",
+      "role": "Monitor: receives EER and P_el from coldroom so they are logged as series; integrates compressor electrical energy",
+      "ports": [
+        {
+          "name": "EER_in",
+          "causality": "input",
+          "description": "Energy efficiency ratio [-]"
+        },
+        {
+          "name": "P_el_in",
+          "causality": "input",
+          "description": "Compressor electrical power [W]"
+        },
+        {
+          "name": "EER_out",
+          "causality": "output",
+          "description": "EER pass-through [-]"
+        },
+        {
+          "name": "P_el_out",
+          "causality": "output",
+          "description": "Electrical power pass-through [W]"
+        },
+        {
+          "name": "E_el_kWh",
+          "causality": "output",
+          "description": "Accumulated compressor electrical energy [kWh]"
         }
       ]
     }
@@ -88,6 +131,18 @@
       "source_port": "cooling_cmd",
       "target": "coldroom",
       "target_port": "cooling_cmd"
+    },
+    {
+      "source": "coldroom",
+      "source_port": "EER",
+      "target": "energy_meter",
+      "target_port": "EER_in"
+    },
+    {
+      "source": "coldroom",
+      "source_port": "P_el",
+      "target": "energy_meter",
+      "target_port": "P_el_in"
     }
   ]
 }

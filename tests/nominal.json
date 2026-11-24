@@ -1,10 +1,12 @@
 {
   "test_id": "nominal",
-  "description": "Room pulls down from 15 C and holds -20 C +/-1 K under sinusoidal ambient.",
-  "fmus": {"weather": "weather.fmu", "coldroom": "coldroom.fmu", "controller": "controller.bin"},
+  "description": "Room pulls down from 15 C and holds -20 C +/-1 K under sinusoidal ambient; EER is 4.5 when ambient crosses 25 C.",
+  "fmus": {"weather": "weather.fmu", "coldroom": "coldroom.fmu", "controller": "controller.bin", "energy_meter": "energy_meter.bin"},
   "simulation_parameters": {"start_time": 0, "stop_time": 172800, "step_size": 10},
   "assertions": [
     {"time": 172800, "variable": "coldroom.T_room_C", "operator": "less_than", "expected": -18.5, "message": "Room must be at or below about -19 C after 2 days"},
-    {"time": 172800, "variable": "coldroom.T_room_C", "operator": "greater_than", "expected": -21.5, "message": "Room must not overcool beyond hysteresis band"}
+    {"time": 172800, "variable": "coldroom.T_room_C", "operator": "greater_than", "expected": -21.5, "message": "Room must not overcool beyond hysteresis band"},
+    {"time": 172800, "variable": "coldroom.EER", "operator": "greater_than", "expected": 4.45, "message": "EER is about 4.5 at 25 C ambient"},
+    {"time": 172800, "variable": "coldroom.EER", "operator": "less_than", "expected": 4.55, "message": "EER is about 4.5 at 25 C ambient"}
   ]
 }

@@ -1,12 +1,13 @@
 {
   "test_id": "limit_safety",
-  "description": "Heat load stays within refrigeration capacity and cooling power never exceeds 2000 W.",
-  "fmus": {"weather": "weather.fmu", "coldroom": "coldroom.fmu", "controller": "controller.bin"},
+  "description": "Heat load stays within refrigeration capacity; cooling power never exceeds 2000 W and compressor electrical power stays within the EER-derived limit.",
+  "fmus": {"weather": "weather.fmu", "coldroom": "coldroom.fmu", "controller": "controller.bin", "energy_meter": "energy_meter.bin"},
   "simulation_parameters": {"start_time": 0, "stop_time": 86400, "step_size": 10},
   "initial_parameter_overrides": {"coldroom": {"T0": 253.15}},
   "assertions": [
     {"time": 21600, "variable": "coldroom.Q_wall", "operator": "less_than", "expected": 1200, "message": "Wall gain at peak (about 1100 W) is below capacity"},
     {"time": 21600, "variable": "coldroom.Q_cool", "operator": "less_or_equal", "expected": 2000, "message": "Cooling power limited to capacity"},
+    {"time": 21600, "variable": "coldroom.P_el", "operator": "less_or_equal", "expected": 600, "message": "Electrical power at 35 C ambient is at most 2000 W / 3.5 = 571 W"},
     {"time": 86400, "variable": "coldroom.T_room_C", "operator": "less_than", "expected": -18.5, "message": "Room stays cold"}
   ]
 }
