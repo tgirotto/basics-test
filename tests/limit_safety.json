@@ -1,0 +1,12 @@
+{
+  "test_id": "limit_safety",
+  "description": "Heat load stays within refrigeration capacity and cooling power never exceeds 2000 W.",
+  "fmus": {"weather": "weather.fmu", "coldroom": "coldroom.fmu", "controller": "controller.bin"},
+  "simulation_parameters": {"start_time": 0, "stop_time": 86400, "step_size": 10},
+  "initial_parameter_overrides": {"coldroom": {"T0": 253.15}},
+  "assertions": [
+    {"time": 21600, "variable": "coldroom.Q_wall", "operator": "less_than", "expected": 1200, "message": "Wall gain at peak (about 1100 W) is below capacity"},
+    {"time": 21600, "variable": "coldroom.Q_cool", "operator": "less_or_equal", "expected": 2000, "message": "Cooling power limited to capacity"},
+    {"time": 86400, "variable": "coldroom.T_room_C", "operator": "less_than", "expected": -18.5, "message": "Room stays cold"}
+  ]
+}

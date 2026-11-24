@@ -1,0 +1,93 @@
+{
+  "modules": [
+    {
+      "name": "weather",
+      "kind": "modelica",
+      "path": "weather.mo",
+      "role": "Sinusoidal ambient temperature 15-35 C, 24 h period",
+      "ports": [
+        {
+          "name": "T_amb",
+          "causality": "output",
+          "description": "Ambient temperature [K]"
+        }
+      ]
+    },
+    {
+      "name": "coldroom",
+      "kind": "modelica",
+      "path": "coldroom.mo",
+      "role": "Insulated cold room thermal plant (UA = 20 W/K) with refrigeration",
+      "ports": [
+        {
+          "name": "T_amb",
+          "causality": "input",
+          "description": "Ambient temperature [K]"
+        },
+        {
+          "name": "cooling_cmd",
+          "causality": "input",
+          "description": "Compressor command 0..1"
+        },
+        {
+          "name": "T_room",
+          "causality": "output",
+          "description": "Room temperature [K]"
+        },
+        {
+          "name": "T_room_C",
+          "causality": "output",
+          "description": "Room temperature [C]"
+        },
+        {
+          "name": "Q_wall",
+          "causality": "output",
+          "description": "Wall heat gain [W]"
+        },
+        {
+          "name": "Q_cool",
+          "causality": "output",
+          "description": "Refrigeration power removed [W]"
+        }
+      ]
+    },
+    {
+      "name": "controller",
+      "kind": "structured_text",
+      "path": "controller.st",
+      "role": "Hysteresis thermostat holding -20 C",
+      "ports": [
+        {
+          "name": "T_room",
+          "causality": "input",
+          "description": "Room temperature [K]"
+        },
+        {
+          "name": "cooling_cmd",
+          "causality": "output",
+          "description": "Compressor command 0..1"
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "source": "weather",
+      "source_port": "T_amb",
+      "target": "coldroom",
+      "target_port": "T_amb"
+    },
+    {
+      "source": "coldroom",
+      "source_port": "T_room",
+      "target": "controller",
+      "target_port": "T_room"
+    },
+    {
+      "source": "controller",
+      "source_port": "cooling_cmd",
+      "target": "coldroom",
+      "target_port": "cooling_cmd"
+    }
+  ]
+}

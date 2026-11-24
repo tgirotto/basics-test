@@ -1,0 +1,11 @@
+{
+  "test_id": "fault_warm_start",
+  "description": "Edge case: room starts warm at 35 C (e.g. after maintenance) and must pull down to -20 C within 24 h.",
+  "fmus": {"weather": "weather.fmu", "coldroom": "coldroom.fmu", "controller": "controller.bin"},
+  "simulation_parameters": {"start_time": 0, "stop_time": 86400, "step_size": 10},
+  "initial_parameter_overrides": {"coldroom": {"T0": 308.15}},
+  "assertions": [
+    {"time": 600, "variable": "coldroom.T_room_C", "operator": "greater_than", "expected": 0, "message": "Room is still warm shortly after start"},
+    {"time": 86400, "variable": "coldroom.T_room_C", "operator": "less_than", "expected": -18.5, "message": "Room recovers to about -20 C within 24 h"}
+  ]
+}
